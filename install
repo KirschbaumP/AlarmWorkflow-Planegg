@@ -1,0 +1,46 @@
+#!/bin/sh
+
+TIMEZONE="Europe/Berlin"
+HOSTNAME="hostanme"
+PASSWORD="sicherspasswort"
+AWFSERVER="ipadresse oder hostname"
+
+echo pi:$PASSWORD | chpasswd
+
+hostname $HOSTNAME
+
+echo $TIMEZONE > /etc/timezone
+cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+
+echo "CONF_SWAPSIZE=1024" > /etc/dphys-swapfile
+dphys-swapfile setup
+dphys-swapfile swapon
+
+
+apt-get update && apt-get upgrade
+
+apt-get install chromium-browser
+
+echo '/usr/bin/chromium --kiosk --ignore-certificate-errors --disable-restore-seesion-state --disabletranslate "http://$AWFSERVER/Display/Alarm"' >> /etc/xdg/lxsession/LXDE-pi/autostart
+
+apt-get install unclutter
+echo "/usr/bin/unclutter -display 0:0 -noevents -grab" >> /etc/xdg/lxsession/LXDE-pi/autostart
+echo "xserver-command=X -s 0 dpms" >> /etc/lightdm/lightdm.conf
+
+apt-get install dpkg-dev librrds-perl libhttp-daemon-perl libjson-perl libipcsharelite-perl libfile-which-perl
+wget https://github.com/XavierBerger/RPi-Monitor-deb/raw/master/packages/rpimonitor_2.9.1-1_all.deb
+dpkg -i rpimonitor_2.9.1-1_all.deb
+rm rpimonitor_2.9.1-1_all.deb
+
+apt-get install x11vnc
+mkdir -p ~/.config/autostart
+echo "[Desktop Entry]" >>  ~/.config/autostart/x11vnc.desktop
+echo "Encoding=UTF-8" >>  ~/.config/autostart/x11vnc.desktop
+echo "Type=Application" >>  ~/.config/autostart/x11vnc.desktop
+echo "Name=x11vnc" >>  ~/.config/autostart/x11vnc.desktop
+echo "Comment=" >>  ~/.config/autostart/x11vnc.desktop
+echo "Exec=x11vnc -display :0 -forever -nopw -ultrafilexfer" >>  ~/.config/autostart/x11vnc.desktop
+echo "StartupNotify=false" >>  ~/.config/autostart/x11vnc.desktop
+echo "Terminal=false" >>  ~/.config/autostart/x11vnc.desktop
+
+reboot

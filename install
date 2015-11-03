@@ -17,22 +17,22 @@ dphys-swapfile setup
 dphys-swapfile swapon
 
 
-apt-get update && apt-get upgrade
+apt-get update && apt-get -y upgrade
 
-apt-get install chromium-browser
+apt-get install -y chromium-browser
 
 echo '/usr/bin/chromium --kiosk --ignore-certificate-errors --disable-restore-seesion-state --disabletranslate "http://$AWFSERVER/Display/Alarm"' >> /etc/xdg/lxsession/LXDE-pi/autostart
 
-apt-get install unclutter
+apt-get install -y unclutter
 echo "/usr/bin/unclutter -display 0:0 -noevents -grab" >> /etc/xdg/lxsession/LXDE-pi/autostart
 echo "xserver-command=X -s 0 dpms" >> /etc/lightdm/lightdm.conf
 
-apt-get install dpkg-dev librrds-perl libhttp-daemon-perl libjson-perl libipcsharelite-perl libfile-which-perl
+apt-get install -y dpkg-dev librrds-perl libhttp-daemon-perl libjson-perl libipc-sharelite-perl libfile-which-perl
 wget https://github.com/XavierBerger/RPi-Monitor-deb/raw/master/packages/rpimonitor_2.9.1-1_all.deb
 dpkg -i rpimonitor_2.9.1-1_all.deb
 rm rpimonitor_2.9.1-1_all.deb
 
-apt-get install x11vnc
+apt-get install -y x11vnc
 mkdir -p ~/.config/autostart
 echo "[Desktop Entry]" >>  ~/.config/autostart/x11vnc.desktop
 echo "Encoding=UTF-8" >>  ~/.config/autostart/x11vnc.desktop
